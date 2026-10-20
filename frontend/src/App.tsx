@@ -12,6 +12,7 @@ import ClinicalRecords from './pages/admin/ClinicalRecords'
 import Timeline from './pages/patient/Timeline'
 import Labs from './pages/patient/Labs'
 import Records from './pages/patient/Records'
+import AIAssistant from './pages/patient/AIAssistant'
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="timeline" element={<Timeline />} />
             <Route path="labs" element={<Labs />} />
             <Route path="records" element={<Records />} />
+            <Route path="ai" element={<AIAssistant />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/login" replace />} />

@@ -2,7 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import {
   LayoutDashboard, Users, Calendar, FlaskConical, FileText,
-  Clock, LogOut, Activity,
+  Clock, LogOut, Activity, Sparkles,
 } from 'lucide-react'
 
 const adminNav = [
@@ -14,9 +14,10 @@ const adminNav = [
 ]
 
 const patientNav = [
-  { to: '/patient/timeline', label: 'My Timeline',  icon: Clock },
-  { to: '/patient/labs',     label: 'My Labs',      icon: FlaskConical },
-  { to: '/patient/records',  label: 'My Records',   icon: FileText },
+  { to: '/patient/timeline', label: 'My Timeline',     icon: Clock },
+  { to: '/patient/labs',     label: 'My Labs',         icon: FlaskConical },
+  { to: '/patient/records',  label: 'My Records',      icon: FileText },
+  { to: '/patient/ai',       label: 'AI Assistant',    icon: Sparkles },
 ]
 
 export function Layout() {

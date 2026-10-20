@@ -19,7 +19,15 @@ psql -U postgres -c "CREATE DATABASE cliniq;"
 psql -U postgres -d cliniq -f backend/schema.sql
 ```
 
-This creates all tables, indexes, views, and seeds demo data (patients, appointments, lab results, etc.).
+This creates all tables, indexes, views, and seeds base demo data (5 patients, 7 appointments, labs, etc.).
+
+2. *(Optional but recommended)* Load extended demo data for richer AI assistant responses:
+
+```bash
+psql -U postgres -d cliniq -f backend/seed_extra.sql
+```
+
+This adds 3–4 months of history per patient: 15 extra appointments, 12 diagnoses, 14 prescriptions, 19 lab results, and 12 clinical records across all 5 patients. The script is idempotent — safe to run multiple times.
 
 ---
 
@@ -37,7 +45,7 @@ source .venv/bin/activate        # macOS/Linux
 ### 2. Install dependencies
 
 ```bash
-pip install fastapi uvicorn[standard] psycopg2-binary python-jose bcrypt python-dotenv
+pip install fastapi uvicorn[standard] psycopg2-binary python-jose bcrypt python-dotenv google-genai
 ```
 
 ### 3. Configure environment
@@ -49,9 +57,10 @@ DATABASE_URL=postgresql://postgres:Manosh%402004@localhost:5432/cliniq
 JWT_SECRET=cliniq_jwt_secret_change_in_production
 JWT_ALGORITHM=HS256
 JWT_EXPIRE_MINUTES=480
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-> **Note:** The `@` in the database password is URL-encoded as `%40`.
+> **Note:** The `@` in the database password is URL-encoded as `%40`. Get a Gemini API key at [aistudio.google.com](https://aistudio.google.com).
 
 ### 4. Run the server
 
@@ -108,6 +117,7 @@ Frontend runs at **http://localhost:5173**
 - My Timeline — appointment history with expandable diagnosis and prescriptions
 - My Labs — lab results with reference ranges
 - My Records — clinical visit notes
+- **AI Assistant** — AI-generated health summary + conversational chat grounded in your own records (powered by Google Gemini)
 
 ---
 
@@ -121,7 +131,8 @@ DBMS-Project/
 │   ├── db.py                # PostgreSQL connection pool
 │   ├── dependencies.py      # Auth guards (get_current_user, require_admin)
 │   ├── models.py            # Pydantic request models
-│   ├── schema.sql           # Full DDL + seed data
+│   ├── schema.sql           # Full DDL + base seed data
+│   ├── seed_extra.sql       # Extended demo data (richer history per patient)
 │   ├── routes/              # One file per resource
 │   │   ├── patients.py
 │   │   ├── appointments.py
@@ -131,7 +142,8 @@ DBMS-Project/
 │   │   ├── clinical_records.py
 │   │   ├── stats.py
 │   │   ├── departments.py
-│   │   └── professionals.py
+│   │   ├── professionals.py
+│   │   └── ai.py            # /ai/summary + /ai/chat (Gemini RAG)
 │   └── .env                 # DB URL + JWT secret (not committed)
 └── frontend/
     ├── src/
@@ -140,7 +152,7 @@ DBMS-Project/
     │   ├── hooks/           # useAuth (AuthContext + JWT decode)
     │   ├── pages/
     │   │   ├── admin/       # Dashboard, Patients, Appointments, Labs, Records
-    │   │   └── patient/     # Timeline, Labs, Records
+    │   │   └── patient/     # Timeline, Labs, Records, AIAssistant
     │   ├── types.ts         # Shared TypeScript interfaces
     │   └── App.tsx          # Routes + AuthProvider
     └── vite.config.ts
