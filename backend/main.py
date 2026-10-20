@@ -17,6 +17,7 @@ from routes.clinical_records import router as records_router
 from routes.stats import router as stats_router
 from routes.departments import router as depts_router
 from routes.professionals import router as profs_router
+from routes.ai import router as ai_router
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("cliniq")
@@ -36,7 +37,7 @@ app = FastAPI(title="ClinIQ API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -52,3 +53,4 @@ app.include_router(records_router,       prefix="/clinical-records",         tag
 app.include_router(stats_router,         prefix="/stats",                    tags=["Stats"])
 app.include_router(depts_router,         prefix="/departments",              tags=["Departments"])
 app.include_router(profs_router,         prefix="/healthcare-professionals", tags=["Professionals"])
+app.include_router(ai_router,            prefix="/ai",                       tags=["AI"])

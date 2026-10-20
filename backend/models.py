@@ -116,3 +116,14 @@ class StatsOut(BaseModel):
     total_appointments: int
     scheduled_appointments: int
     pending_labs: int
+
+
+# ── AI ────────────────────────────────────────────────
+class ChatMessage(BaseModel):
+    role: str  # 'user' or 'model'
+    content: str
+
+
+class ChatRequest(BaseModel):
+    message: str
+    history: list[ChatMessage] = []
